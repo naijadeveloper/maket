@@ -1,0 +1,73 @@
+{% extends 'core/base.html' %}
+<!--  -->
+
+{% block title %}
+  {{ category.name }}
+{% endblock %}
+<!--  -->
+
+
+{% block content %}
+  <div>
+    <h2 class="flex items-center justify-center mt-3 mb-5 font-bold text-4xl underline underline-offset-4 decoration-4">{{ category.name }}</h2>
+
+    <!-- items for category -->
+    <div class="mt-12 min-h-[300px] flex items-center justify-center {% if items != 'error1' and items != 'error2' %} px-2 flex-wrap gap-8 gap-y-12 {% endif %}">
+      {% if items == "error1" %}
+        <!-- error if user typed a page that isn't a number -->
+        <p class="flex flex-col gap-y-4 items-center justify-center text-3xl">
+          <span class="text-5xl">❌</span>
+          <span class="font-semibold">This "{{ page }}", is not a page number</span>
+        </p>
+      {% elif items == "error2" %}
+        <!-- error if user typed a page greater than available pages -->
+        <p class="flex flex-col gap-y-4 items-center justify-center text-3xl">
+          <span class="text-5xl">⚠️</span>
+          <span class="font-semibold">Page "{{ page }}" does not exist</span>
+        </p>
+      {% endif %}
+
+      <!-- items for page -->
+      {% if "error" not in items %}
+        {% for item in items %}
+          <div class="grow relative group w-[300px] min-h-[100px] bg-neutral-300 rounded drop-shadow-xl">
+            <a href="{% url 'item:detail' item.id %}">
+              <img class="rounded-t w-full h-[200px] object-cover" src="{{ item.image.url }}" alt="{{ item.name }}-image" />
+              <h4 class="px-2 py-2 flex items-center justify-between gap-x-3" title="{{ item.name }}">
+                <span class="w-[60%] text-2xl font-bold tracking-tight whitespace-nowrap overflow-hidden text-ellipsis">{{ item.name }}</span>
+                <span class="italic text-sm">{{ item.stock }} {% if item.stock == 1 %}item{% else %}items{% endif %} in stock</span>
+              </h4>
+              <p class="px-4 py-1 bg-blue-900 text-neutral-200 rounded-b rounded-t-2xl font-bold group-hover:bg-blue-700 border-t-4 border-blue-600 transition-all">
+                <span>Price:</span>
+                <span>${{ item.price }}</span>
+              </p>
+            </a>
+            <!-- seller -->
+            <a href="{% url 'dashboard:other_user_profile' item.created_by %}" class="absolute top-2 left-2 rounded-md font-semibold bg-neutral-800/60 text-neutral-100 flex items-center justify-center gap-x-2 px-2 py-1 text-sm hover:bg-neutral-800">
+              <span>⭐</span>
+              <span>BY: 
+                {% if request.user == item.created_by %}
+                  You
+                {% else %}
+                  {{ item.created_by }}
+                {% endif %}
+              </span>
+              <span>⭐</span>
+            </a>
+          </div>
+        {% endfor %}
+      {% endif %}
+    </div>
+
+    <!-- pagination -->
+    {% if items != "error1" and items != "error2" %}
+      <div class="mt-8 mb-5 flex flex-wrap gap-4 items-center justify-center">
+        {% for page_number in no_of_pages %}
+          <a href="{% url 'core:category' category.id %}?page={{ page_number }}" class="flex items-center justify-center w-[40px] h-[40px] rounded text-lg font-semibold {% if page == page_number %} bg-blue-500 text-neutral-100 {% else %} bg-neutral-700 text-neutral-100 hover:bg-blue-500 {% endif %}">
+            {{ page_number }}
+          </a>
+        {% endfor %}
+      </div>
+    {% endif %}
+  </div>
+{% endblock %}

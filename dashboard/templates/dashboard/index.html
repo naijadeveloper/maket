@@ -1,0 +1,42 @@
+{% extends 'core/base.html' %}
+<!--  -->
+
+<!-- title block -->
+{% block title %}
+  Dashboard
+{% endblock %}
+
+
+{% block content %}
+  <div class="px-2 min-h-[500px] flex flex-wrap gap-4 gap-x-6 items-center justify-center">
+    <!-- profile -->
+    <a href="{% url 'dashboard:profile' %}" class="w-[200px] min-h-[200px] bg-neutral-200 border border-b-4 border-b-neutral-600 border-neutral-300 text-neutral-800 rounded-md flex flex-col items-center justify-center gap-y-4 hover:border-b hover:border-b-neutral-300">
+      <i class="fa-solid fa-user text-6xl"></i>
+      <span class="text-4xl font-bold">Profile</span>
+    </a>
+
+    <!-- cart -->
+    <a href="{% url 'dashboard:cart' %}" class="w-[200px] min-h-[200px] bg-neutral-200 border border-b-4 border-b-neutral-600 border-neutral-300 text-neutral-800 rounded-md flex flex-col items-center justify-center gap-y-4 hover:border-b hover:border-b-neutral-300">
+      <i class="fa-solid fa-cart-shopping text-6xl"></i>
+      <span class="text-4xl font-bold">Cart</span>
+    </a>
+
+    <!-- categories -->
+    <a href="{% url 'dashboard:category' %}" class="w-[200px] min-h-[200px] bg-neutral-200 border border-b-4 border-b-neutral-600 border-neutral-300 text-neutral-800 rounded-md flex flex-col items-center justify-center gap-y-4 hover:border-b hover:border-b-neutral-300">
+      <i class="fa-solid fa-table text-6xl"></i>
+      <span class="text-4xl font-bold">Categories</span>
+    </a>
+
+    <!-- settings -->
+    <a href="{% url 'dashboard:settings' %}" class="w-[200px] min-h-[200px] bg-neutral-200 border border-b-4 border-b-neutral-600 border-neutral-300 text-neutral-800 rounded-md flex flex-col items-center justify-center gap-y-4 hover:border-b hover:border-b-neutral-300">
+      <i class="fa-solid fa-gear text-6xl"></i>
+      <span class="text-4xl font-bold">Settings</span>
+    </a>
+
+    <!-- Logout -->
+    <a href="{% url 'dashboard:logout' %}" class="w-[200px] min-h-[200px] bg-neutral-200 border border-b-4 border-b-neutral-600 border-neutral-300 text-neutral-800 rounded-md flex flex-col items-center justify-center gap-y-4 hover:border-b hover:border-b-neutral-300">
+      <i class="fa-solid fa-right-from-bracket text-6xl"></i>
+      <span class="text-4xl font-bold">Log out</span>
+    </a>
+  </div>
+{% endblock %}

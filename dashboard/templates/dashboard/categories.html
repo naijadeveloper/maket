@@ -1,0 +1,107 @@
+{% extends "core/base.html" %}
+<!--  -->
+
+<!-- title block -->
+{% block title %}
+  Dashboard - Categories
+{% endblock %}
+
+
+<!-- content block -->
+{% block content %}
+  <div class="flex gap-4 max-md:flex-col sm:-mx-4 sm:-my-4 max-sm:-mx-2 max-sm:-my-2 max-sm:mb-2">
+    <aside class="group/aside md:sticky top-20 left-2 min-w-[25%] md:mb-4 md:max-w-[30%] md:h-[500px] max-md:w-[100%] max-md:min-h-[120px]">
+      <div class="h-full overflow-auto py-4 text-neutral-100 bg-neutral-700 md:rounded [&::-webkit-scrollbar]:w-0 [&::-webkit-scrollbar]:h-2 [&::-webkit-scrollbar-track]:bg-neutral-700 [&::-webkit-scrollbar-track]:rounded-r [&::-webkit-scrollbar-thumb]:bg-neutral-400 max-md:py-0 group-hover/aside:[&::-webkit-scrollbar]:w-2">
+        <div class="my-4 overflow-x-auto divide-neutral-800 md:divide-y-2 max-md:divide-x-2 max-md:flex max-md:flex-nowrap max-md:my-0 [&::-webkit-scrollbar]:h-0 [&::-webkit-scrollbar-track]:bg-neutral-700 [&::-webkit-scrollbar-track]:rounded-r [&::-webkit-scrollbar-thumb]:bg-neutral-400 group-hover/aside:[&::-webkit-scrollbar]:h-2">
+          {% for category, items_list in categories.items %}
+            <a href="{% url 'dashboard:category' %}?query={{ category }}" class="group/cat flex flex-col gap-y-2 px-2 py-4 max-md:justify-center max-md:items-center {% if query == category %} bg-neutral-900 {% else %} hover:bg-neutral-800 {% endif %}">
+              <p class="flex gap-3 items-center max-md:justify-center max-md:w-[120px] max-md:flex-col">
+                <!--  -->
+                {% if category == "Toys and games" %}
+                  <i class="fa-solid fa-gamepad"></i>
+                {% elif category == "Clothing" %}
+                  <i class="fa-solid fa-shirt"></i>
+                {% elif category == "Art" %}
+                  <i class="fa-solid fa-palette"></i>
+                {% elif category == "Electronics" %}
+                  <i class="fa-solid fa-bolt"></i>
+                {% elif category == "Food, drinks and groceries" %}
+                  <i class="fa-solid fa-bowl-food"></i>
+                {% elif category == "Furniture and decor" %}
+                  <i class="fa-solid fa-couch"></i>
+                {% elif category == "Home appliances" %}
+                  <i class="fa-solid fa-house"></i>
+                {% elif category == "Media and entertainment" %}
+                  <i class="fa-solid fa-camera"></i>
+                {% elif category == "Personal care and Beauty" %}
+                  <i class="fa-solid fa-hand-holding-heart"></i>
+                {% elif category == "Software" %}
+                  <i class="fa-solid fa-compact-disc"></i>
+                {% endif %}
+                <!--  -->
+                <span class="font-bold max-md:text-center">{{ category }}</span>
+              </p>
+              <p class="{% if query == category %} flex {% else %} hidden {% endif %} w-[fit-content] italic text-xs px-4 bg-neutral-600 text-neutral-100 border border-neutral-700 border-b-2 rounded-lg group-hover/cat:flex">{{ items_list.0 }} {% if items_list.0 > 1 %} items {% else %} item {% endif %}</p>
+            </a>
+          {% endfor %}
+        </div>
+      </div>
+    </aside>
+    <!--  -->
+    <section class="w-[100%] py-2 min-h-[500px] text-neutral-900">
+      <h2 id="category-heading" class="flex flex-col gap-y-1 items-center justify-center text-neutral-700 font-bold py-2 mb-3 text-2xl">
+        <!--  -->
+        {% if query == "Toys and games" %}
+          <i class="fa-solid fa-gamepad text-5xl"></i>
+        {% elif query == "Clothing" %}
+          <i class="fa-solid fa-shirt text-5xl"></i>
+        {% elif query == "Art" %}
+          <i class="fa-solid fa-palette text-5xl"></i>
+        {% elif query == "Electronics" %}
+          <i class="fa-solid fa-bolt text-5xl"></i>
+        {% elif query == "Food, drinks and groceries" %}
+          <i class="fa-solid fa-bowl-food text-5xl"></i>
+        {% elif query == "Furniture and decor" %}
+          <i class="fa-solid fa-couch text-5xl"></i>
+        {% elif query == "Home appliances" %}
+          <i class="fa-solid fa-house text-5xl"></i>
+        {% elif query == "Media and entertainment" %}
+          <i class="fa-solid fa-camera text-5xl"></i>
+        {% elif query == "Personal care and Beauty" %}
+          <i class="fa-solid fa-hand-holding-heart text-5xl"></i>
+        {% elif query == "Software" %}
+          <i class="fa-solid fa-compact-disc text-5xl"></i>
+        {% endif %}
+        <!--  -->
+        <span class="underline underline-offset-2 decoration-4">{{ query }}</span>
+      </h2>
+      <p class="mb-8 mt-3 px-2 text-neutral-600 text-sm text-center">
+        {% for category, items_list in categories.items %}
+          {% if query == category %}
+            {{ items_list.1 }}
+          {% endif %}
+        {% endfor %}
+      </p>
+      <div id="items-container" class="px-2 flex flex-wrap gap-6 items-center justify-center">
+        {% for item in items %}
+          <a href="{% url 'item:detail' item.id %}" data-category="{{ item.category }}" class="item-category group grow w-[300px] min-h-[100px] bg-neutral-300 rounded drop-shadow-xl">
+            <img class="rounded-t w-full h-[200px] object-cover" src="{{ item.image.url }}" alt="{{ item.name }}-image" />
+            <h4 class="mx-4 my-2 text-2xl font-bold tracking-tight">{{ item.name }}</h4>
+            <p class="px-4 py-1 bg-blue-900 text-neutral-200 rounded-b rounded-t-2xl font-bold group-hover:bg-blue-700 border-t-4 border-blue-600 transition-all">
+              <span>Price:</span>
+              <span>${{ item.price }}</span>
+            </p>
+          </a>
+        {% endfor %}
+
+        {% if not items %}
+          <p class="flex flex-col gap-y-4 justify-center items-center pb-16">
+            <span class="text-6xl">😕</span>
+            <span class="text-4xl font-semibold text-center">You are not selling anything in this category. why?</span>
+            <a href="{% url 'item:newItem' %}" class="bg-blue-500 flex items-center justify-center px-4 py-4 rounded text-center text-neutral-100 font-semibold hover:bg-blue-500/90">Click to  change that</a>
+          </p>
+        {% endif %}
+      </div>
+    </section>
+  </div>
+{% endblock %}

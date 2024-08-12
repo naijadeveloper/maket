@@ -1,0 +1,9 @@
+{% extends "core/base.html" %}
+
+{% block title %}
+  Profile - {{ user.username }}
+{% endblock %}
+
+{% block content %}
+  <div>{{ user.username }}</div>
+{% endblock %}

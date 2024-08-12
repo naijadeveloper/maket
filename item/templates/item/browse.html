@@ -1,0 +1,57 @@
+{% extends 'core/base.html' %}
+
+{% block title %}Browse{% endblock %}
+
+{% block content %}
+  <div class="px-4 flex flex-col gap-y-6">
+    <div class="relative">
+      <form method="get" action=".">
+        <input type="text" name="query" class="w-full appearance-none px-2 py-2 bg-neutral-700 text-neutral-300 font-semibold rounded outline-none border-4 border-transparent border-b-neutral-900 focus:border-neutral-900" placeholder="Search for items based on item's name or seller's name" autofocus spellcheck="false" {% if query %} value="{{ query }}" {% endif %}>
+      </form>
+
+      {% if query %}
+        <a href="{% url 'item:browse' %}" class="absolute top-1 right-1 bottom-1 bg-neutral-500 hover:bg-neutral-500/70 px-4 py-1 rounded text-neutral-200 font-bold flex items-center justify-center">Clear</a>
+      {% endif %}
+    </div>
+    <div class="px-2 flex flex-wrap gap-8 gap-y-12 items-center justify-center">
+      {% if query and items %}
+        {% for item in items %}
+          <div class="grow relative group w-[300px] min-h-[100px] bg-neutral-300 rounded drop-shadow-xl">
+            <a href="{% url 'item:detail' item.id %}">
+              <img class="rounded-t w-full h-[200px] object-cover" src="{{ item.image.url }}" alt="{{ item.name }}-image" />
+              <h4 class="px-2 py-2 flex items-center justify-between gap-x-3" title="{{ item.name }}">
+                <span class="w-[60%] text-2xl font-bold tracking-tight whitespace-nowrap overflow-hidden text-ellipsis">{{ item.name }}</span>
+                <span class="italic text-sm">{{ item.stock }} {% if item.stock == 1 %}item{% else %}items{% endif %} in stock</span>
+              </h4>
+              <p class="px-4 py-1 bg-blue-900 text-neutral-200 rounded-b rounded-t-2xl font-bold group-hover:bg-blue-700 border-t-4 border-blue-600 transition-all">
+                <span>Price:</span>
+                <span>${{ item.price }}</span>
+              </p>
+            </a>
+            <!-- seller -->
+            <a href="{% url 'dashboard:other_user_profile' item.created_by %}" class="absolute top-2 left-2 rounded-md font-semibold bg-neutral-800/60 text-neutral-100 flex items-center justify-center gap-x-2 px-2 py-1 text-sm hover:bg-neutral-800">
+              <span>⭐</span>
+              <span>BY: 
+                {% if request.user == item.created_by %}
+                  You
+                {% else %}
+                  {{ item.created_by }}
+                {% endif %}
+              </span>
+              <span>⭐</span>
+            </a>
+          </div>
+        {% endfor %}
+
+        {% if not request.user.is_authenticated %}
+          <div class="mb-3">Please <a class="text-blue-600 font-semibold" href="{% url 'core:login' %}">Log in</a> to see more search results</div>
+        {% endif %}
+      {% else %}
+        <p class="font-semibold text-neutral-600 flex flex-col gap-y-3 items-center justify-center">
+          <span class="text-6xl">🤔</span>
+          <span class="text-2xl">No search result found</span>
+        </p>
+      {% endif %}
+    </div>
+  </div>
+{% endblock %}

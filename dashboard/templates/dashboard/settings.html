@@ -1,0 +1,72 @@
+{% extends 'core/base.html' %}
+<!--  -->
+
+<!-- title block -->
+{% block title %}
+  Dashboard - Settings
+{% endblock %}
+
+
+<!--  -->
+{% block content %}
+  <div class="flex items-center justify-center w-full">
+    <div class="w-full max-w-[500px] text-neutral-100 bg-neutral-900">
+      <h2 class="flex items-center justify-center text-neutral-300 font-bold py-4 text-2xl bg-neutral-700">{{ title|upper }}</h2>
+      <form method="post" action="." enctype="multipart/form-data" class="px-2 mt-6 flex flex-col gap-y-8">
+        {% csrf_token %}
+
+        <label class="flex flex-col-reverse justify-center">
+          {{ form.profile_image }}
+          <span class="flex w-[fit-content] font-semibold pl-1 text-sm peer-focus:pb-1 transition-all">PROFILE IMAGE</span>
+        </label>
+
+        <label class="flex flex-col-reverse justify-center items-start">
+          {{ form.allow_banner }}
+          <span class="flex w-[fit-content] font-semibold pl-1 text-sm peer-focus:pb-1 transition-all">ALLOW BANNER (BANNER IMAGE WON'T SHOW UP IF TURNED OFF)</span>
+        </label>
+
+        <label class="flex flex-col-reverse justify-center">
+          {{ form.profile_banner }}
+          <span class="flex w-[fit-content] font-semibold pl-1 text-sm peer-focus:pb-1 transition-all">PROFILE BANNER</span>
+        </label>
+
+        <label class="flex flex-col-reverse justify-center">
+          {{ form.banner_number }}
+          <span class="flex w-[fit-content] font-semibold pl-1 text-sm peer-focus:pb-1 transition-all">IF BANNER IMAGE FILE IS MISSING. WE HAVE BANNERS YOU CAN USE (1 - 4) </span>
+        </label>
+
+        <label class="flex flex-col-reverse justify-center">
+          {{ form.bio }}
+          <span class="flex w-[fit-content] font-semibold pl-1 text-sm peer-focus:pb-1 transition-all">WRITE ABOUT YOURSELF</span>
+        </label>
+
+        <label class="flex flex-col-reverse justify-center">
+          {{ form.country }}
+          <span class="flex w-[fit-content] font-semibold pl-1 text-sm peer-focus:pb-1 transition-all">COUNTRY</span>
+        </label>
+
+        <label class="flex flex-col-reverse justify-center">
+          {{ form.state }}
+          <span class="flex w-[fit-content] font-semibold pl-1 text-sm peer-focus:pb-1 transition-all">STATE</span>
+        </label>
+
+        <label class="flex flex-col-reverse justify-center">
+          {{ form.city }}
+          <span class="flex w-[fit-content] font-semibold pl-1 text-sm peer-focus:pb-1 transition-all">CITY</span>
+        </label>
+
+        {% if form.errors or form.non_field_errors %}
+          <div class="flex flex-col items-center mt-4 [&_li]:italic [&_li]:text-red-500 [&_ul]:px-2">
+            <p class="flex w-[fit-content] rounded-sm items-center justify-center text-neutral-300 font-bold px-4 py-1 mb-2 bg-neutral-700">Fix Errors</p>
+            {% for field in form %}
+              {{ field.errors }}
+            {% endfor %}
+            {{ form.non_field_errors }}
+          </div>
+        {% endif %}
+
+        <button type="submit" class="mb-6 w-full py-2 px-2 rounded-sm bg-blue-500 hover:bg-blue-500/90">SAVE PROFILE</button>
+      </form>
+    </div>
+  </div>
+{% endblock content %}

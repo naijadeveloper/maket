@@ -1,0 +1,50 @@
+{% extends 'core/base.html' %}
+<!--  -->
+
+<!-- title block -->
+{% block title %}
+  Dashboard - Cart
+{% endblock %}
+
+
+{% block content %}
+  <div class="mt-12 min-h-[300px] flex items-center justify-center px-2 flex-wrap gap-8 gap-y-12">
+    {% for cart in all_carts %}
+      <div class="grow relative group w-[300px] min-h-[100px] bg-neutral-300 rounded drop-shadow-xl">
+        <a href="{% url 'item:detail' cart.item.id %}">
+          <img class="rounded-t w-full h-[200px] object-cover" src="{{ cart.item.image.url }}" alt="{{ cart.item.name }}-image" />
+          <h4 class="px-2 py-2 flex items-center justify-between gap-x-3" title="{{ cart.item.name }}">
+            <span class="w-[60%] text-2xl font-bold tracking-tight whitespace-nowrap overflow-hidden text-ellipsis">{{ cart.item.name }}</span>
+            <span class="italic text-sm">{{ cart.item.stock }} {% if cart.item.stock == 1 %}item{% else %}items{% endif %} in stock</span>
+          </h4>
+          <div class="px-4 py-1 flex justify-between items-center bg-blue-900 text-neutral-200 rounded-b rounded-t-2xl font-bold group-hover:bg-blue-700 border-t-4 border-blue-600 transition-all">
+            <p>
+              <span>Price:</span>
+              <span>${{ cart.item.price }}</span>
+            </p>
+
+            <a href="{% url 'dashboard:cart' cart.id %}" class="text-xs hover:underline hover:decoration-4 hover:underline-offset-4 hover:decoration-blue-900">
+              Remove from cart
+            </a>
+          </div>
+        </a>
+        <!-- seller -->
+        <a href="{% url 'dashboard:other_user_profile' cart.created_by %}" class="absolute top-2 left-2 rounded-md font-semibold bg-neutral-800/60 text-neutral-100 flex items-center justify-center gap-x-2 px-2 py-1 text-sm hover:bg-neutral-800">
+          <span>⭐</span>
+          <span>BY: 
+            {% if request.user == cart.item.created_by %}
+              You
+            {% else %}
+              {{ cart.item.created_by }}
+            {% endif %}
+          </span>
+          <span>⭐</span>
+        </a>
+      </div>
+    {% empty %}
+      <p class="text-2xl font-semibold">
+        When you add an item to cart, it shows up here
+      </p>
+    {% endfor %}
+  </div>
+{% endblock %}

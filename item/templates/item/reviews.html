@@ -1,0 +1,195 @@
+{% extends 'core/base.html' %}
+<!--  -->
+
+{% block title %}
+ item - Ratings
+{% endblock title %}
+<!--  -->
+
+{% block content %}
+  <div>
+    <!-- show the item this review belongs to -->
+    <section class="flex items-center gap-x-2 max-md:flex-col">
+      <div class="min-h-[150px] w-[250px] flex border-2 border-neutral-500">
+        <img class="rounded-t w-full h-[150px] object-cover" src="{{ item.image.url }}" alt="{{ item.name }}-image" />
+      </div>
+      <div class="min-h-[150px] flex flex-col justify-center">
+        <h3 class="flex items-center font-bold text-xl">{{ item.name }}</h3>
+        <p class="flex items-center gap-x-2">
+          <span class="bg-neutral-700 text-neutral-100 rounded flex items-center justify-center h-[25px] min-w-[90px]">
+            <span class="w-full h-full flex item-center justify-center rounded-l">Price</span>
+            <span class="w-full h-full bg-neutral-500 rounded-r flex items-center justify-center">{{ item.price }}</span>
+          </span>
+          <span class="bg-neutral-700 text-neutral-100 rounded flex items-center justify-center h-[25px] min-w-[90px]">
+            <span class="w-full h-full flex item-center justify-center rounded-l">Stock</span>
+            <span class="w-full h-full bg-neutral-500 rounded-r flex items-center justify-center">{{ item.stock }}</span>
+          </span>
+
+          <p>{{ item.description|truncatechars:180 }}</p>
+
+          <a href="{% url 'item:detail' item.id %}" class="mt-1 px-2 py-1 bg-blue-500 rounded hover:bg-blue-500/80 flex items-center justify-center gap-1 text-neutral-200 font-semibold">Check item</a>
+        </p>
+      </div>
+    </section>
+
+    <!-- show your review and modify button -->
+    {% if request.user != item.created_by %}
+      <section class="border-b-2 border-neutral-800">
+        <h2 class="mt-5 w-full flex items-center border-b-2 border-neutral-800 pb-1 text-3xl font-bold text-neutral-800">Your Rating</h2>
+        {% if my_item_rating %}
+          <article class="my-3 mb-5">
+            <h3 class="font-bold text-2xl">
+              <a href="{% url 'dashboard:other_user_profile' my_item_rating.created_by.username %}" class="decoration-2 underline-offset-2 hover:underline">
+                {{ my_item_rating.created_by.username }}
+              </a>
+            </h3>
+            <!-- rate -->
+            <p class="flex items-center gap-x-1">
+              {% for _ in ''|ljust:'5' %}
+                {% if forloop.counter <= my_item_rating.rate %}
+                  <svg class="w-4 h-4 text-yellow-500" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 22 20">
+                    <path d="M20.924 7.625a1.523 1.523 0 0 0-1.238-1.044l-5.051-.734-2.259-4.577a1.534 1.534 0 0 0-2.752 0L7.365 5.847l-5.051.734A1.535 1.535 0 0 0 1.463 9.2l3.656 3.563-.863 5.031a1.532 1.532 0 0 0 2.226 1.616L11 17.033l4.518 2.375a1.534 1.534 0 0 0 2.226-1.617l-.863-5.03L20.537 9.2a1.523 1.523 0 0 0 .387-1.575Z"/>
+                  </svg>
+                {% else %}
+                  <svg class="w-4 h-4 text-gray-500 dark:text-gray-500" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 22 20">
+                    <path d="M20.924 7.625a1.523 1.523 0 0 0-1.238-1.044l-5.051-.734-2.259-4.577a1.534 1.534 0 0 0-2.752 0L7.365 5.847l-5.051.734A1.535 1.535 0 0 0 1.463 9.2l3.656 3.563-.863 5.031a1.532 1.532 0 0 0 2.226 1.616L11 17.033l4.518 2.375a1.534 1.534 0 0 0 2.226-1.617l-.863-5.03L20.537 9.2a1.523 1.523 0 0 0 .387-1.575Z"/>
+                  </svg>
+                {% endif %}
+              {% endfor %}
+              <span class="ml-1">{{ my_item_rating.modified_at|date:"SHORT_DATE_FORMAT" }}</span>
+            </p>
+
+            <p class="mt-1">{{ my_item_rating.description }}</p>
+
+            <div class="flex items-center justify-end">
+              <button class="show_form_btn px-2 py-1 bg-blue-500 rounded hover:bg-blue-500/80 flex items-center justify-center text-neutral-200 font-semibold">Modify</button>
+            </div>
+          </article>
+        {% else %}
+          <p class="my-3 mb-5 px-4 h-full flex flex-col items-center justify-center gap-y-3">
+            <span class="text-center font-semibold text-3xl">
+              You have not rated this item.
+            </span>
+            <button class="show_form_btn px-2 py-1 bg-blue-500 rounded hover:bg-blue-500/80 flex items-center justify-center text-neutral-200 font-semibold">Rate this item</button>
+          </p>
+        {% endif %}
+
+        <!-- form for adding or modifying review -->
+        <form action="." method="post" id="review_form" class="hidden flex-col gap-y-4 mb-5">
+          {% csrf_token %}
+
+          {{ form.rate }}
+
+          {{ form.description }}
+          
+          <div class="flex items-center justify-end gap-x-3">
+            <button id="hide_form" class="px-2 py-1 bg-red-500 rounded hover:bg-red-500/80 flex items-center justify-center text-neutral-200 font-semibold">Cancel</button>
+
+            <button type="submit" class="px-2 py-1 bg-blue-500 rounded hover:bg-blue-500/80 flex items-center justify-center text-neutral-200 font-semibold">
+              {% if my_item_rating %} Update {% else %} Add {% endif %}
+            </button>
+          </div>
+
+          {% if form.errors or form.non_field_errors %}
+            <div class="flex flex-col items-center mt-4 [&_li]:italic [&_li]:text-red-500 [&_ul]:px-2">
+              <p class="flex w-[fit-content] rounded-sm items-center justify-center text-neutral-300 font-bold px-4 py-1 mb-2 bg-neutral-700">Fix Errors</p>
+              {% for field in form %}
+                {{ field.errors }}
+              {% endfor %}
+              {{ form.non_field_errors }}
+            </div>
+          {% endif %}
+        </form>
+      </section>
+    {% else %}
+      <section class="border-y-2 border-neutral-800 my-3 py-5">
+        <p class="px-4 flex items-center justify-center">
+          <span class="text-center font-semibold">
+            ❌ You can't rate an item you own
+          </span>
+        </p>
+      </section>
+    {% endif %}
+
+    <!-- show all reviews -->
+    <section>
+      {% for item_rating in item_ratings %}
+        <article class="my-3 mb-5">
+          <h3 class="font-bold text-2xl">
+            <a href="{% url 'dashboard:other_user_profile' item_rating.created_by.username %}" class="decoration-2 underline-offset-2 hover:underline">
+              {{ item_rating.created_by.username }}
+            </a>
+          </h3>
+          <!-- rate -->
+          <p class="flex items-center gap-x-1">
+            {% for _ in ''|ljust:'5' %}
+              {% if forloop.counter <= item_rating.rate %}
+                <svg class="w-4 h-4 text-yellow-500" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 22 20">
+                  <path d="M20.924 7.625a1.523 1.523 0 0 0-1.238-1.044l-5.051-.734-2.259-4.577a1.534 1.534 0 0 0-2.752 0L7.365 5.847l-5.051.734A1.535 1.535 0 0 0 1.463 9.2l3.656 3.563-.863 5.031a1.532 1.532 0 0 0 2.226 1.616L11 17.033l4.518 2.375a1.534 1.534 0 0 0 2.226-1.617l-.863-5.03L20.537 9.2a1.523 1.523 0 0 0 .387-1.575Z"/>
+                </svg>
+              {% else %}
+                <svg class="w-4 h-4 text-gray-500 dark:text-gray-500" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 22 20">
+                  <path d="M20.924 7.625a1.523 1.523 0 0 0-1.238-1.044l-5.051-.734-2.259-4.577a1.534 1.534 0 0 0-2.752 0L7.365 5.847l-5.051.734A1.535 1.535 0 0 0 1.463 9.2l3.656 3.563-.863 5.031a1.532 1.532 0 0 0 2.226 1.616L11 17.033l4.518 2.375a1.534 1.534 0 0 0 2.226-1.617l-.863-5.03L20.537 9.2a1.523 1.523 0 0 0 .387-1.575Z"/>
+                </svg>
+              {% endif %}
+            {% endfor %}
+            <span class="ml-1">{{ item_rating.modified_at|date:"SHORT_DATE_FORMAT" }}</span>
+          </p>
+
+          <p class="mt-1">{{ item_rating.description }}</p>
+        </article>
+      {% endfor %}
+    </section>
+  </div>
+{% endblock content%}
+
+
+{% block bottom_app_script %}
+  <script>
+    const show_form_btn = document.querySelectorAll(".show_form_btn");
+    const review_form = document.querySelector("#review_form");
+    const hide_form = document.querySelector("#hide_form");
+
+    //Note: it's possible that non of those buttons or form
+    // exist on page, so check first before any action on them
+
+
+    if(show_form_btn) {
+      // event listener - show form
+      show_form_btn.forEach(btnElem => {
+        btnElem.addEventListener("click", handle_form_reveal);
+      });
+    }
+
+    // event listener - hide form
+    if(hide_form) {
+      hide_form.addEventListener("click", handle_form_conceal);
+    }
+
+
+    function handle_form_reveal(e) {
+      // add class 'flex' to form, remove class 'hidden' 
+      review_form.classList.remove("hidden");
+      review_form.classList.add("flex");
+
+      // add class "hidden" to button element, remove class "flex"
+      this.classList.remove("flex")
+      this.classList.add("hidden");
+    }
+
+
+    function handle_form_conceal(e) {
+      e.preventDefault() // prevent this button from submitting form
+
+      // remove class "hidden" from show_form_btns, and add "flex"
+      show_form_btn.forEach(btnElem => {
+        btnElem.classList.remove("hidden");
+        btnElem.classList.add("flex");
+      });
+
+      // remove class "flex" from review_form, and add "hidden"
+      review_form.classList.remove("flex");
+      review_form.classList.add("hidden");
+    }
+  </script>
+{% endblock bottom_app_script %}

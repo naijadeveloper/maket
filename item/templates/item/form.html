@@ -1,0 +1,65 @@
+{% extends "core/base.html" %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block content %}
+  <div class="flex items-center justify-center w-full">
+    <div class="w-full max-w-[500px] text-neutral-100 bg-neutral-900">
+      <h2 class="flex items-center justify-center text-neutral-300 font-bold py-4 text-2xl bg-neutral-700">{{ title|upper }}</h2>
+      <form method="post" action="." enctype="multipart/form-data" class="px-2 mt-6 flex flex-col gap-y-8">
+        {% csrf_token %}
+
+        {% if title != "Edit Item" %}
+          <label class="flex flex-col-reverse justify-center">
+            {{ form.category }}
+            <span class="flex w-[fit-content] font-semibold pl-1 text-sm peer-focus:pb-1 transition-all">CATEGORY</span>
+          </label>
+        {% endif %}
+
+        <label class="flex flex-col-reverse justify-center">
+          {{ form.name }}
+          <span class="flex w-[fit-content] font-semibold pl-1 text-sm peer-focus:pb-1 transition-all">NAME</span>
+        </label>
+
+        <label class="flex flex-col-reverse justify-center">
+          {{ form.description }}
+          <span class="flex w-[fit-content] font-semibold pl-1 text-sm peer-focus:pb-1 transition-all">DESCRIPTION</span>
+        </label>
+
+        <label class="flex flex-col-reverse justify-center">
+          {{ form.price }}
+          <span class="flex w-[fit-content] font-semibold pl-1 text-sm peer-focus:pb-1 transition-all">PRICE</span>
+        </label>
+
+        <label class="flex flex-col-reverse justify-center">
+          {{ form.stock }}
+          <span class="flex w-[fit-content] font-semibold pl-1 text-sm peer-focus:pb-1 transition-all">NUMBER IN STOCK</span>
+        </label>
+
+        <label class="flex flex-col-reverse justify-center">
+          {{ form.image }}
+          <span class="flex w-[fit-content] font-semibold pl-1 text-sm peer-focus:pb-1 transition-all">IMAGE</span>
+        </label>
+
+        {% if title == "Edit Item" %}
+          <label class="flex flex-row-reverse justify-end gap-x-3">
+            {{ form.is_sold }}
+            <span class="flex w-[fit-content] font-semibold pl-1 text-sm peer-focus:pb-1 transition-all">IS ITEM SOLD</span>
+          </label>
+        {% endif %}
+
+        {% if form.errors or form.non_field_errors %}
+          <div class="flex flex-col items-center mt-4 [&_li]:italic [&_li]:text-red-500 [&_ul]:px-2">
+            <p class="flex w-[fit-content] rounded-sm items-center justify-center text-neutral-300 font-bold px-4 py-1 mb-2 bg-neutral-700">Fix Errors</p>
+            {% for field in form %}
+              {{ field.errors }}
+            {% endfor %}
+            {{ form.non_field_errors }}
+          </div>
+        {% endif %}
+
+        <button type="submit" class="mb-6 w-full py-2 px-2 rounded-sm bg-blue-500 hover:bg-blue-500/90">{% if title == "Edit Item" %} SAVE ITEM {% else %} ADD ITEM {% endif %}</button>
+      </form>
+    </div>
+  </div>
+{% endblock %}
