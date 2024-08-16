@@ -95,10 +95,23 @@ WSGI_APPLICATION = 'maket.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
 
+# if DEBUG = True
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': BASE_DIR / 'db.sqlite3',
+#     }
+# }
+
+# if DEBUG = False
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': env("ENGINE"),
+        "HOST": env("HOST"),
+        'NAME': env("DB_NAME"),
+        "USER": env("USER"),
+        "PASSWORD": env("DB_PASSWORD"),
+        "PORT": env("PORT"),
     }
 }
 
