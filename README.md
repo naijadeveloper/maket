@@ -91,7 +91,7 @@ The app lets you create an account and management items, you want to sell. Altho
 <em>Some of my struggles</em>
 
 - I don't know if you would ever encouter this, but I struggled for a week or so trying to install `django-cloudinary-storage` package with python 3.12, the problem had something to do with 'building wheel', I tried a lot of solutions, only one worked for me. I installed python 3.10 and used that to install the package globally, and then I tried installing the package again, locally, in my virtual environment with python 3.12 and it worked, why? lol I don't know, shhhhh don't ask questions, if it ain't broken no more leave it lol.
-- In other to allow your app/website communicate with the postgresql database, you need the engine `django.db.backends.postgresql_psycopg2` but this won't work without `pip install psycopg2-binary`.
+- To allow your app/website communicate with the postgresql database, you need the engine `django.db.backends.postgresql_psycopg2` but this won't work without `pip install psycopg2-binary`.
   Initially I was using sqlite3 for database, then I launched the website on vercel and I met the _500 internal server error_.
   For this I can suggest 3 solutions
 
