@@ -61,7 +61,7 @@
 
 The website features user authentication, profile management, item listings and ratings, messaging between sellers and buyers, search functionality, a shopping cart, media storage and PostgreSQL database management.
 
-The app lets you create an account and management items, you want to sell. Although, the feature "checkout" isn't available. This was a project built for the purpose of understanding the features of 'Django'. A 'pratice project', if you will ✌🏾
+The app lets you create an account and management items, you want to sell. Although, the feature "checkout" isn't available. This was a project built for the purpose of understanding the features of 'Django'. A 'practice project', if you will ✌🏾
 
 <img src="https://user-images.githubusercontent.com/74038190/212284100-561aa473-3905-4a80-b561-0d28506553ee.gif" />
 
